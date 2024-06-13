@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      .term {
+        top: 0;
+        left: 0;
+        /* position: absolute; */
+        height: 50vh;
+        width: 100vw;
+      }
+      #editor {
+        position: absolute;
+        top: 50vh;
+        left: 0;
+        height: 50vh;
+        width: calc(100vw - 200px);
+      }
+      #run {
+        position: absolute;
+        top: 50vh;
+        left: calc(100vw - 240px);
+        width: 40px;
+        height: 20px;
+        z-index: 2000;
+      }
+      #libList {
+        position: absolute;
+        top: 50vh;
+        left: calc(100vw - 201px);
+        width: 199px;
+        height: 50vh;
+        border-left: 1px solid black;
+        z-index: 2000;
+      }
+      #libInput {
+        width: calc(100% - 20px);
+      }
+      #installBtn {
+        position: absolute;
+        width: 20px;
+        top: 0;
+        right: 0;
+      }
+    </style>
+    <script src="/require.js"></script>
+    <script src="/src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cheerpxdemos.leaningtech.com/publicdeploy/20240501_137/cx.js"></script>
+  </head>
+  <body>
+    <pre id="console" class="term"></pre>
+    <div id="libList">
+      <input id="libInput" placeholder="lib name"/>
+      <button id="installBtn">i</button>
+      <ul id="libs-ul">
+
+      </ul>
+    </div>
+    <div id="editor">
+const test = () => console.log('test');
+test();
+    </div>
+    <button id="run">>></button>
+    <script type="module">
+      const cx = await CheerpXApp.create({
+        devices: [
+          {
+            name: "block1",
+            type: "bytes",
+            url: "/debian_mini_node_20240613_9494983970.ext2",
+          },
+        ],
+        mounts: [{ type: "ext2", dev: "block1", path: "/" }],
+      });
+      const cmd = document.getElementById("console");
+      cx.setConsole(cmd);
+
+      const basicEnv = {
+        env: [
+          "HOME=/home/user",
+          "USER=user",
+          "SHELL=/bin/bash",
+          "EDITOR=vim",
+          "LANG=en_US.UTF-8",
+          "LC_ALL=C",
+        ],
+        cwd: "/home/user",
+        uid: 1000,
+        gid: 1000,
+      }
+      
+      const setcwd = (cwd) => {
+        basicEnv.cwd = cwd;
+      }
+
+      const run = async (command) => {
+        await cx.run("/bin/bash", ["-c", command], basicEnv);
+      }
+
+      const init = async () => {
+        await run("/bin/rm -fr examples");
+        await run("/bin/mkdir -p test");
+        await run("apt install npm -y");
+        setcwd('/home/user/test');
+      }
+
+      await init();
+      await run("/bin/pwd");
+      // await run('node ./primes.js');
+
+      const editor = ace.edit("editor");
+
+      const handleRun = async () => {
+        console.log('run!');
+        const code = editor.getValue();
+        // console.log(code);
+        await run(`/bin/echo "${code}" > /home/user/test/index.js`);
+        await run(`node /home/user/test/index.js`);
+      }
+
+      const handleLibAdd = () => {
+        const name = document.querySelector('#libInput').value;
+        const li = document.createElement('li');
+        li.textContent = name;
+        document.querySelector('#libs-ul').appendChild(li);
+      }
+
+      const install = async () => {
+        const els = Array.from(document.querySelectorAll('#libs-ul > li')).map(el => el.textContent);
+        console.log(els);
+      }
+
+
+      document.querySelector('#run').addEventListener('click', handleRun)
+      document.querySelector('#installBtn').addEventListener('click', install)
+      document.querySelector('#libInput').addEventListener('keypress',(event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          handleLibAdd();
+        }
+      }); 
+    </script>
+  </body>
+</html>
