@@ -70,7 +70,7 @@ test();
           {
             name: "block1",
             type: "bytes",
-            url: "/debian_mini_node_20240613_9494983970.ext2",
+            url: "/debian_mini_node_20240613_9496896676.ext2",
           },
         ],
         mounts: [{ type: "ext2", dev: "block1", path: "/" }],
@@ -103,12 +103,12 @@ test();
       const init = async () => {
         await run("/bin/rm -fr examples");
         await run("/bin/mkdir -p test");
-        await run("apt install npm -y");
         setcwd('/home/user/test');
+        await run("npm init -y");
       }
 
       await init();
-      await run("/bin/pwd");
+      await run("/bin/ls");
       // await run('node ./primes.js');
 
       const editor = ace.edit("editor");
