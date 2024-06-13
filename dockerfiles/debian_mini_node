@@ -9,7 +9,7 @@ RUN apt-get -y install apt-utils gcc \
 	less cowsay netcat-openbsd
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
 RUN bash nodesource_setup.sh
-RUN apt-get install nodejs
+RUN apt-get install nodejs npm -y
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
 RUN chmod -R +x  /home/user/examples/lua
