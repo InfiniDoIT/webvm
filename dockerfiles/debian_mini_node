@@ -1,4 +1,4 @@
-FROM --platform=i386 i386/node
+FROM --platform=i386 pionl/docker-node-with-i386:18
 ARG DEBIAN_FRONTEND=noninteractive
 ARG NODE_MAJOR=18
 ARG ARCH=amd64
