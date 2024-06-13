@@ -1,4 +1,4 @@
-FROM node:18-buster
+FROM --platform=linux/i386 node:18-buster
 ARG DEBIAN_FRONTEND=noninteractive
 ARG NODE_MAJOR=18
 ARG ARCH=amd64
