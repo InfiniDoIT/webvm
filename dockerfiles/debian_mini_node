@@ -7,8 +7,8 @@ RUN apt-get -y install apt-utils gcc \
 	patch wamerican ucf manpages \
 	file dialog curl \
 	less cowsay netcat-openbsd
-RUN curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh
-RUN bash /tmp/nodesource_setup.sh
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
 RUN apt-get install nodejs
 RUN useradd -m user && echo "user:password" | chpasswd
 COPY --chown=user:user ./examples /home/user/examples
