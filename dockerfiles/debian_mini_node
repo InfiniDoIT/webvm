@@ -1,4 +1,4 @@
-FROM i368/node:18-buster-slim
+FROM node:18-buster-slim
 ARG DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 RUN useradd -m user && echo "user:password" | chpasswd
